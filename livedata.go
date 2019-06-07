@@ -58,6 +58,10 @@ func Set(id string, i interface{}) {
 	call <- Data{ID: id, Data: i}
 }
 
+func Broadcast(id string) {
+	call <- Data{ID: id, Data: dataMap[id]}
+}
+
 func Get(id string) interface{} {
 	return dataMap[id]
 }
