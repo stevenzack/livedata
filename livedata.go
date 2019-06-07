@@ -39,7 +39,7 @@ func init() {
 				dataMap[data.ID] = data.Data
 				fns := eventMap[data.ID]
 				for _, fn := range fns {
-					fn(data.Data)
+					go fn(data.Data)
 				}
 			}
 		}
