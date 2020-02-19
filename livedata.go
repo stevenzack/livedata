@@ -1,6 +1,10 @@
 package livedata
 
-import "github.com/StevenZack/pubsub"
+import (
+	"fmt"
+
+	"github.com/StevenZack/pubsub"
+)
 
 type LiveData struct {
 	value  interface{}
@@ -22,7 +26,11 @@ func (l *LiveData) ObserveForever(onChange func(interface{})) {
 	go func() {
 		client := pubsub.NewClient(l.server)
 		defer client.UnSub()
-		client.Sub(l.chanId, onChange)
+		e := client.Sub(l.chanId, onChange)
+		if e != nil {
+			fmt.Println("livedata observe error :", e)
+			return
+		}
 	}()
 	onChange(l.value)
 }
