@@ -1,25 +1,25 @@
 package livedata
 
-type LiveDataString struct {
+type String struct {
 	liveData *LiveData
 }
 
-func NewLiveDataString(s string) *LiveDataString {
-	return &LiveDataString{
+func NewString(s string) *String {
+	return &String{
 		liveData: NewLiveData(s),
 	}
 }
 
-func (l *LiveDataString) ObserveForever(onChange func(string)) {
+func (l *String) ObserveForever(onChange func(string)) {
 	l.liveData.ObserveForever(func(v interface{}) {
 		onChange(v.(string))
 	})
 }
 
-func (l *LiveDataString) Post(s string) {
+func (l *String) Post(s string) {
 	l.liveData.Post(s)
 }
 
-func (l *LiveDataString) Get() string {
+func (l *String) Get() string {
 	return l.liveData.Get().(string)
 }

@@ -1,25 +1,25 @@
 package livedata
 
-type LiveDataBool struct {
+type Bool struct {
 	liveData *LiveData
 }
 
-func NewLiveDataBool(b bool) *LiveDataBool {
-	return &LiveDataBool{
+func NewBool(b bool) *Bool {
+	return &Bool{
 		liveData: NewLiveData(b),
 	}
 }
 
-func (l *LiveDataBool) ObserveForever(onChange func(bool)) {
+func (l *Bool) ObserveForever(onChange func(bool)) {
 	l.liveData.ObserveForever(func(v interface{}) {
 		onChange(v.(bool))
 	})
 }
 
-func (l *LiveDataBool) Post(b bool) {
+func (l *Bool) Post(b bool) {
 	l.liveData.Post(b)
 }
 
-func (l *LiveDataBool) Get() bool {
+func (l *Bool) Get() bool {
 	return l.liveData.Get().(bool)
 }
