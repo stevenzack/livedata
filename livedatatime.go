@@ -16,13 +16,13 @@ func NewTime(t time.Time) *Time {
 }
 
 func (l *Time) Observe(lifecycleGoroutine func(), onChange func(time.Time)) {
-	l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
+	go l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
 		onChange(v.(time.Time))
 	})
 }
 
 func (l *Time) ObserveCtx(ctx context.Context, onChange func(time.Time)) {
-	l.liveData.ObserveCtx(ctx, func(v interface{}) {
+	go l.liveData.ObserveCtx(ctx, func(v interface{}) {
 		onChange(v.(time.Time))
 	})
 }

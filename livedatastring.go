@@ -13,19 +13,19 @@ func NewString(s string) *String {
 }
 
 func (l *String) Observe(lifecycleGoroutine func(), onChange func(string)) {
-	l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
+	go l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
 		onChange(v.(string))
 	})
 }
 
 func (l *String) ObserveCtx(ctx context.Context, onChange func(string)) {
-	l.liveData.ObserveCtx(ctx, func(v interface{}) {
+	go l.liveData.ObserveCtx(ctx, func(v interface{}) {
 		onChange(v.(string))
 	})
 }
 
 func (l *String) ObserveForever(onChange func(string)) {
-	l.liveData.ObserveForever(func(v interface{}) {
+	go l.liveData.ObserveForever(func(v interface{}) {
 		onChange(v.(string))
 	})
 }

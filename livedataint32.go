@@ -13,19 +13,19 @@ func NewInt32(i int32) *Int32 {
 }
 
 func (l *Int32) Observe(lifecycleGoroutine func(), onChange func(int32)) {
-	l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
+	go l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
 		onChange(v.(int32))
 	})
 }
 
 func (l *Int32) ObserveCtx(ctx context.Context, onChange func(int32)) {
-	l.liveData.ObserveCtx(ctx, func(v interface{}) {
+	go l.liveData.ObserveCtx(ctx, func(v interface{}) {
 		onChange(v.(int32))
 	})
 }
 
 func (l *Int32) ObserveForever(onChange func(int32)) {
-	l.liveData.ObserveForever(func(v interface{}) {
+	go l.liveData.ObserveForever(func(v interface{}) {
 		onChange(v.(int32))
 	})
 }

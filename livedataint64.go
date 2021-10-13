@@ -13,19 +13,19 @@ func NewInt64(i int64) *Int64 {
 }
 
 func (l *Int64) Observe(lifecycleGoroutine func(), onChange func(int64)) {
-	l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
+	go l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
 		onChange(v.(int64))
 	})
 }
 
 func (l *Int64) ObserveCtx(ctx context.Context, onChange func(int64)) {
-	l.liveData.ObserveCtx(ctx, func(v interface{}) {
+	go l.liveData.ObserveCtx(ctx, func(v interface{}) {
 		onChange(v.(int64))
 	})
 }
 
 func (l *Int64) ObserveForever(onChange func(int64)) {
-	l.liveData.ObserveForever(func(v interface{}) {
+	go l.liveData.ObserveForever(func(v interface{}) {
 		onChange(v.(int64))
 	})
 }

@@ -13,19 +13,19 @@ func NewBool(b bool) *Bool {
 }
 
 func (l *Bool) Observe(lifecycleGoroutine func(), onChange func(bool)) {
-	l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
+	go l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
 		onChange(v.(bool))
 	})
 }
 
 func (l *Bool) ObserveCtx(ctx context.Context, onChange func(bool)) {
-	l.liveData.ObserveCtx(ctx, func(v interface{}) {
+	go l.liveData.ObserveCtx(ctx, func(v interface{}) {
 		onChange(v.(bool))
 	})
 }
 
 func (l *Bool) ObserveForever(onChange func(bool)) {
-	l.liveData.ObserveForever(func(v interface{}) {
+	go l.liveData.ObserveForever(func(v interface{}) {
 		onChange(v.(bool))
 	})
 }
