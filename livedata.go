@@ -1,45 +1,46 @@
 package livedata
 
 import (
-	"fmt"
+	"context"
+	"sync/atomic"
 
 	"github.com/StevenZack/pubsub"
 )
 
 type LiveData struct {
-	value  interface{}
-	server *pubsub.Server
-	chanId string
+	value atomic.Value
+	topic *pubsub.Topic
 }
 
 func NewLiveData(v interface{}) *LiveData {
-	server := pubsub.NewServer()
-	server.Start()
-	return &LiveData{
-		value:  v,
-		server: server,
-		chanId: "livedata",
+	livedata := &LiveData{
+		topic: pubsub.NewTopic(),
 	}
+	livedata.value.Store(v)
+	return livedata
 }
 
-func (l *LiveData) ObserveForever(onChange func(interface{})) {
-	go func() {
-		client := pubsub.NewClient(l.server)
-		defer client.UnSub()
-		e := client.Sub(l.chanId, onChange)
-		if e != nil {
-			fmt.Println("livedata observe error :", e)
-			return
-		}
-	}()
-	onChange(l.value)
+func (l *LiveData) Observe(lifecycleGoroutine func(), onChange func(v interface{})) {
+	l.topic.Subscribe(lifecycleGoroutine, func() {
+		onChange(l.value.Load())
+	})
+}
+
+func (l *LiveData) ObserveCtx(ctx context.Context, onChange func(v interface{})) {
+	l.topic.SubscribeCtx(ctx, func() {
+		onChange(l.value.Load())
+	})
+}
+
+func (l *LiveData) ObserveForever(onChange func(v interface{})) {
+	l.ObserveCtx(context.Background(), onChange)
 }
 
 func (l *LiveData) Post(v interface{}) {
-	l.value = v
-	l.server.Pub(l.chanId, v)
+	l.value.Store(v)
+	l.topic.Broadcast()
 }
 
 func (l *LiveData) Get() interface{} {
-	return l.value
+	return l.value.Load()
 }

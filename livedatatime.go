@@ -1,27 +1,42 @@
 package livedata
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type Time struct {
-	l *LiveData
+	liveData *LiveData
 }
 
 func NewTime(t time.Time) *Time {
 	return &Time{
-		l: NewLiveData(t),
+		liveData: NewLiveData(t),
 	}
 }
 
+func (l *Time) Observe(lifecycleGoroutine func(), onChange func(time.Time)) {
+	l.liveData.Observe(lifecycleGoroutine, func(v interface{}) {
+		onChange(v.(time.Time))
+	})
+}
+
+func (l *Time) ObserveCtx(ctx context.Context, onChange func(time.Time)) {
+	l.liveData.ObserveCtx(ctx, func(v interface{}) {
+		onChange(v.(time.Time))
+	})
+}
+
 func (t *Time) ObserveForever(onChange func(t time.Time)) {
-	t.l.ObserveForever(func(v interface{}) {
+	t.liveData.ObserveForever(func(v interface{}) {
 		onChange(v.(time.Time))
 	})
 }
 
 func (t *Time) Post(v time.Time) {
-	t.l.Post(v)
+	t.liveData.Post(v)
 }
 
 func (t *Time) Get() time.Time {
-	return t.l.Get().(time.Time)
+	return t.liveData.Get().(time.Time)
 }
